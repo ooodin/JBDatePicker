@@ -8,6 +8,39 @@
 
 import UIKit
 
+public extension JBDatePickerView {
+    
+    public func isAllowedNext() -> Bool {
+        let date = self.presentedMonthView.date
+        return Calendar.current.compare(date!, to: monthByAdding(2), toGranularity: .month) == .orderedAscending
+    }
+    
+    public func isAllowedPrev() -> Bool {
+        let date = self.presentedMonthView.date
+        return Calendar.current.compare(date!, to: monthByAdding(-2), toGranularity: .month) == .orderedDescending
+    }
+    
+    public func monthByAdding(_ value: Int) -> Date {
+        return Calendar.current.date(byAdding: .month, value: value, to: Date())!
+    }
+    public func loadNextViewIfAllowed(date: Date) {
+        guard isAllowedNext() else {
+            return
+        }
+        loadNextView()
+    }
+    
+    ///scrolls the previous month into the visible area and creates an new 'previous' month waiting in line.
+    public func loadPreviousViewIfAllowed(date: Date) {
+        guard isAllowedPrev() else {
+            return
+        }
+        loadPreviousView()
+    }
+    
+    
+}
+
 class JBDatePickerContentVC: UIViewController, UIScrollViewDelegate {
     
     // MARK: - Properties
@@ -249,11 +282,31 @@ class JBDatePickerContentVC: UIViewController, UIScrollViewDelegate {
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         
+        var point = CGPoint(x: scrollView.contentOffset.x, y: scrollView.contentOffset.y)
+        
+        if !datePickerView.isAllowedNext()
+            && scrollView.contentOffset.x >= scrollView.frame.size.width {
+            
+            scrollView.isScrollEnabled = false
+            point.x = scrollView.frame.size.width
+            scrollView.setContentOffset(point, animated: true)
+            scrollView.isScrollEnabled = true
+        }
+        if !datePickerView.isAllowedPrev()
+            && scrollView.contentOffset.x <=  scrollView.frame.size.width {
+            
+            scrollView.isScrollEnabled = false
+            point.x = scrollView.frame.size.width
+            scrollView.setContentOffset(point, animated: true)
+            scrollView.isScrollEnabled = true
+        }
+        
         let page = Int(floor((scrollView.contentOffset.x -
             scrollView.frame.width / 2) / scrollView.frame.width) + 1)
         if currentPage != page {
             currentPage = page
         }
+
         
     }
     

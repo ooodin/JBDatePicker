@@ -14,7 +14,7 @@ public final class JBDatePickerMonthView: UIStackView {
     // MARK: - Properties
     
     weak var datePickerView: JBDatePickerView!
-    var date: Date!
+    public var date: Date!
     var isPresented: Bool! {
         
         willSet{
