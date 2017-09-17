@@ -12,12 +12,14 @@ public extension JBDatePickerView {
     
     public func isAllowedNext() -> Bool {
         let date = self.presentedMonthView.date
-        return Calendar.current.compare(date!, to: monthByAdding(2), toGranularity: .month) == .orderedAscending
+        let amountNextMonths = self.amountNextMonths
+        return Calendar.current.compare(date!, to: monthByAdding(amountNextMonths), toGranularity: .month) == .orderedAscending
     }
     
     public func isAllowedPrev() -> Bool {
         let date = self.presentedMonthView.date
-        return Calendar.current.compare(date!, to: monthByAdding(-2), toGranularity: .month) == .orderedDescending
+        let amountPrevMonths = -self.amountPrevMonths
+        return Calendar.current.compare(date!, to: monthByAdding(amountPrevMonths), toGranularity: .month) == .orderedDescending
     }
     
     public func monthByAdding(_ value: Int) -> Date {

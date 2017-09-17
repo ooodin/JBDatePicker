@@ -25,6 +25,9 @@ public final class JBDatePickerView: UIView {
     var weekdaysView: WeekDaysView!
     fileprivate var dateFormatter = DateFormatter()
   
+    public var amountNextMonths: Int = 2
+    public var amountPrevMonths: Int = -2
+    
     public weak var delegate: JBDatePickerViewDelegate? {
         didSet{
             commonInit()
